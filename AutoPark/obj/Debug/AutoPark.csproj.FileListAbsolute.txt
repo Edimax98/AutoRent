@@ -38,3 +38,5 @@ C:\Users\Даниил\Documents\Visual Studio 2015\Projects\AutoPark\AutoPark\bi
 C:\Users\Даниил\Documents\Visual Studio 2015\Projects\AutoPark\AutoPark\bin\Debug\ru\Xceed.Wpf.AvalonDock.resources.dll
 C:\Users\Даниил\Documents\Visual Studio 2015\Projects\AutoPark\AutoPark\bin\Debug\sv\Xceed.Wpf.AvalonDock.resources.dll
 C:\Users\Даниил\Documents\Visual Studio 2015\Projects\AutoPark\AutoPark\bin\Debug\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Даниил\Documents\Visual Studio 2015\Projects\AutoPark\AutoPark\obj\Debug\LoginWindow.g.cs
+C:\Users\Даниил\Documents\Visual Studio 2015\Projects\AutoPark\AutoPark\obj\Debug\LoginWindow.baml

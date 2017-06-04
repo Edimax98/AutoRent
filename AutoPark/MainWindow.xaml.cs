@@ -21,6 +21,7 @@ using System.IO;
 using Microsoft.Win32;
 using System.Runtime.InteropServices;
 using System.Drawing;
+using MaterialDesignColors;
 
 namespace AutoPark
 {
@@ -36,8 +37,6 @@ namespace AutoPark
         Style headerHidden = new Style();
         SqlConnection connection = new SqlConnection(@"Server=EDIMAX;Database=AutoPark;Trusted_Connection=Yes;");
         BitmapImage noImgBtm = new BitmapImage(new Uri(@"C:\Users\Даниил\Desktop\noCar.png"));
-        bool imgChosen = false;
-        bool noImgCar = false;
         System.Windows.Controls.Image imgForNewCard = new System.Windows.Controls.Image();
         byte[] byteArray;
         private SqlDataAdapter CarsDa = new SqlDataAdapter();
@@ -47,10 +46,6 @@ namespace AutoPark
         private SqlDataAdapter ClientDa = new SqlDataAdapter();
         private DataSet BookingDs = new DataSet();
         private SqlDataAdapter BookingDa = new SqlDataAdapter();
-
-
-
-
 
         public MainWindow()
         {
@@ -73,6 +68,8 @@ namespace AutoPark
 
         private void window_loaded(object sender, RoutedEventArgs e)
         {
+            LoginWindow lw = new LoginWindow();
+            lw.Show();
             loadCar();
             fillInFields();
             fillUpDataGrids();
@@ -164,16 +161,14 @@ namespace AutoPark
 
         private void NewCar_Click(object sender, RoutedEventArgs e)
         {
-            //inputCarClientTabItem.Visibility = Visibility.Visible;
             AddClientCard.Visibility = Visibility.Collapsed;
             AddCarCard.Visibility = Visibility.Visible;
             BookCarCard.Visibility = Visibility.Collapsed;
-            MainTabControl.SelectedItem = inputCarClientTabItem;
+            MainTabControl.SelectedItem = inputCarClientTabItem;   
         }
 
         private void reloadCards()
         {
-            cardsList.Count();
             foreach (var card in cardsList)
             {
                 wrapPanelCars.Children.Remove(card);
@@ -352,7 +347,6 @@ namespace AutoPark
             }
             
             connection.Close();
-            imgChosen = false;
         }
 
         private byte[] ImageToByteArray(System.Windows.Controls.Image img)
@@ -383,7 +377,6 @@ namespace AutoPark
                 BitmapImage b = new BitmapImage();
                 b.StreamSource = new MemoryStream(byteArray);
                 imgForNewCard.Source = b;
-                imgChosen = true;
                 ChangeImgButton.IsEnabled = true;
             }
         }
