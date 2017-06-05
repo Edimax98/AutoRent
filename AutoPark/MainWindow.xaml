@@ -91,7 +91,7 @@
 
                         </WrapPanel>
 
-                        <materialDesign:PopupBox Grid.Row="1" Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}" 
+                        <materialDesign:PopupBox x:Name="AddNewThingPopUp" Grid.Row="1" Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}" 
                                              VerticalAlignment="Bottom" HorizontalAlignment="Right" 
                                              Margin="0,0,0,16" materialDesign:ShadowAssist.ShadowDepth="Depth3">
                             <StackPanel>
@@ -130,9 +130,8 @@
                 <TextBlock Grid.Column="0" VerticalAlignment="Center" Margin="16 0 8 0">Brand</TextBlock>
                 <ComboBox x:Name="searchAutoParkByBrandComboBox"  Grid.Column="1" materialDesign:HintAssist.Hint="Search"
                   IsEditable="True" materialDesign:HintAssist.HintOpacity=".26"/>
-                <WebBrowser x:Name="webBrowser" Grid.Column="2" Margin="30,0">
-                </WebBrowser>
-                <Button Grid.Row="0" Click="Button_Click_1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,100,0,0" Width="90">
+                <WebBrowser x:Name="webBrowser" Grid.Column="2" Margin="30,0,2,0"/>
+                <Button Grid.Row="0" Click="Button_Click_1" VerticalAlignment="Center" Margin="8,100,0,0" Width="90" HorizontalAlignment="Center">
                     SEARCH
                 </Button>
 
@@ -204,7 +203,6 @@
                                         <ColumnDefinition Width="auto"/>
                                     </Grid.ColumnDefinitions>
 
-
                                     <materialDesign:PackIcon Kind="Numeric" Grid.Row="1" Grid.Column="0" Width="20" Height="20" Margin="10,10,2,0" VerticalAlignment="Stretch"/>
                                     <TextBox x:Name="CarNumberTextBox" materialDesign:HintAssist.Hint="Номер" Grid.Column="0" Grid.Row="1" Width="100" Margin="35,10,75,0" HorizontalAlignment="Left"/>
 
@@ -226,6 +224,8 @@
                                     <materialDesign:PackIcon Kind="Percent" Grid.Row="4" Grid.Column="0" Width="20" Height="20" Margin="10,30,2,0" VerticalAlignment="Stretch"/>
                                     <TextBox x:Name="CarDiscountTextBox" materialDesign:HintAssist.Hint="Скидка" Grid.Column="0" Grid.Row="4" Width="100" Margin="35,30,75,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
 
+                                    <materialDesign:PackIcon Kind="Settings" Grid.Row="4" Grid.Column="1" Width="20" Height="20" Margin="7,30,2,0" VerticalAlignment="Stretch"/>
+                                    <ComboBox x:Name="CarTransmissionComboBox" materialDesign:HintAssist.Hint="КПП" Grid.Column="1" Grid.Row="4" Width="100" Margin="30,30,75,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                 </Grid>
 
                                 <StackPanel Grid.Row="2" VerticalAlignment="Top" Margin="0" HorizontalAlignment="Left" Width="400">
@@ -347,7 +347,7 @@
             <Grid>
                 <ScrollViewer>
                     <StackPanel>
-                        <materialDesign:Card Margin="8" VerticalAlignment="Stretch">
+                        <materialDesign:Card Margin="8" VerticalAlignment="Stretch" x:Name="CarTableCard">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*"/>
@@ -367,7 +367,7 @@
                             </Grid>
                         </materialDesign:Card>
 
-                        <materialDesign:Card Margin="8" VerticalAlignment="Stretch">
+                        <materialDesign:Card Margin="8" VerticalAlignment="Stretch" x:Name="ClientTableCard" >
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*"/>
@@ -387,7 +387,7 @@
                             </Grid>
                         </materialDesign:Card>
 
-                        <materialDesign:Card Margin="8" VerticalAlignment="Stretch">
+                        <materialDesign:Card Margin="8" VerticalAlignment="Stretch" x:Name="BookingTableCard">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*"/>
@@ -405,13 +405,16 @@
                                 <materialDesign:Snackbar Grid.Row="2" MessageQueue="{materialDesign:MessageQueue}" x:Name="BookingChangedSnackBar" HorizontalAlignment="Stretch"/>
                             </Grid>
                         </materialDesign:Card>
-
-
                     </StackPanel>
                 </ScrollViewer>
             </Grid>
         </TabItem>
+        <TabItem Header="ИНФО">
 
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="8">
+                <materialDesign:Card x:Name="CarInfoCard" VerticalAlignment="Stretch" Margin="12"/>
+            </StackPanel>
+        </TabItem>
     </dragablz:TabablzControl>
 
 

@@ -16,18 +16,15 @@ using System.Data.SqlClient;
 
 namespace AutoPark
 {
-    /// <summary>
-    /// Interaction logic for LoginWindow.xaml
-    /// </summary>
     public partial class LoginWindow : Window
     {
+        private MainWindow window;
         SqlConnection connection = new SqlConnection(@"Server=EDIMAX;Database=AutoPark;Trusted_Connection=Yes;");
-        private LoginWindow lgWindow;
         public LoginWindow()
         {
             InitializeComponent();
         }
-
+        
         private void connectToDataBase()
         {
             try
@@ -73,7 +70,6 @@ namespace AutoPark
                 return false;
             }
 
-            // Strip the salt value off the front of the stored password.
             string saltValue = profilePassword.Substring(0, saltLength);
 
             foreach (string hashingAlgorithmName in HashingAlgorithms)
@@ -99,8 +95,18 @@ namespace AutoPark
         private void LogInButton_Click(object sender, RoutedEventArgs e)
         {
           
-            if (VerifyHashedPassword(PasswordTextBox.Text, getPasswordFromDB(LoginTextBox.Text)))
+            if (VerifyHashedPassword(PasswordTextBox.Password, getPasswordFromDB(LoginTextBox.Text)))
             {
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window.GetType() == typeof(MainWindow))
+                    {
+                        (window as MainWindow).AddNewThingPopUp.Visibility = Visibility.Visible;
+                        (window as MainWindow).CarTableCard.Visibility = Visibility.Visible;
+                        (window as MainWindow).ClientTableCard.Visibility = Visibility.Visible;
+                        (window as MainWindow).BookingTableCard.Visibility = Visibility.Visible;
+                    }
+                }
                 this.Close();
             } else
             {
@@ -112,6 +118,17 @@ namespace AutoPark
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window.GetType() == typeof(MainWindow))
+                {
+                    (window as MainWindow).AddNewThingPopUp.Visibility = Visibility.Collapsed;
+                    (window as MainWindow).CarTableCard.Visibility = Visibility.Collapsed;
+                    (window as MainWindow).ClientTableCard.Visibility = Visibility.Collapsed;
+                    (window as MainWindow).BookingTableCard.Visibility = Visibility.Collapsed;
+                }
+            }
+
             this.Close();
         }
     }

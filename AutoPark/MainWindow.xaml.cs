@@ -46,6 +46,7 @@ namespace AutoPark
         private SqlDataAdapter ClientDa = new SqlDataAdapter();
         private DataSet BookingDs = new DataSet();
         private SqlDataAdapter BookingDa = new SqlDataAdapter();
+        public bool isAdmin = false;
 
         public MainWindow()
         {
@@ -75,6 +76,18 @@ namespace AutoPark
             fillUpDataGrids();
             ChangeImgButton.IsEnabled = false;
             connection.Close();
+            hideControls();
+        }
+
+        private void hideControls()
+        {
+            AddCarCard.Visibility = Visibility.Collapsed;
+            BookCarCard.Visibility = Visibility.Collapsed;
+            AddClientCard.Visibility = Visibility.Collapsed;
+            AddNewThingPopUp.Visibility = Visibility.Collapsed;
+            CarTableCard.Visibility = Visibility.Collapsed;
+            BookingTableCard.Visibility = Visibility.Collapsed;
+            ClientTableCard.Visibility = Visibility.Collapsed;
         }
 
         private void fillInFields()
@@ -112,6 +125,14 @@ namespace AutoPark
                 }
             }
             connection.Close();
+
+            CarTransmissionComboBox.Items.Add("4MT");
+            CarTransmissionComboBox.Items.Add("5MT");
+            CarTransmissionComboBox.Items.Add("6MT");
+            CarTransmissionComboBox.Items.Add("5AT");
+            CarTransmissionComboBox.Items.Add("6AT");
+            CarTransmissionComboBox.Items.Add("7AT");
+            CarTransmissionComboBox.Items.Add("8AT");
         }
 
 
@@ -217,12 +238,9 @@ namespace AutoPark
             TextBlock priceTextBlock = new TextBlock();
             TextBlock nameTextBlock = new TextBlock();
             System.Windows.Controls.Image carImg = new System.Windows.Controls.Image();
-
             BitmapImage carImgBit = loadPicture(byteArray);
-            //MemoryStream tempMs = new MemoryStream(byteArray);
-            //carImgBit.StreamSource = tempMs;
-
-            Car car = new Car(Convert.ToInt32(CarPriceTextBox.Text), CarBrandComboBox.Text, CarSpecTextBox.Text, CarModelTextBox.Text, carImgBit, CarNumberTextBox.Text, false, CarClassTextBox.Text, Convert.ToInt32(CarDiscountTextBox.Text));
+          
+            Car car = new Car(Convert.ToInt32(CarPriceTextBox.Text), CarBrandComboBox.Text, CarSpecTextBox.Text, CarModelTextBox.Text + " " + CarTransmissionComboBox.Text, carImgBit, CarNumberTextBox.Text, false, CarClassTextBox.Text, Convert.ToInt32(CarDiscountTextBox.Text));
 
             wrapPanelCars.Children.Add(crd);
             crd.Style = style;
@@ -252,7 +270,7 @@ namespace AutoPark
                 {
                     panel = item as StackPanel;
                     nameTextBlock = panel.Children[0] as TextBlock;
-                    nameTextBlock.Text = CarModelTextBox.Text;
+                    nameTextBlock.Text = CarModelTextBox.Text + " " + CarTransmissionComboBox.Text;
                 }
 
                 if (item is Grid && !firstGrFound)
@@ -306,7 +324,7 @@ namespace AutoPark
                     commandAddCar.Parameters.AddWithValue("@spec", CarSpecTextBox.Text);
                     commandAddCar.Parameters.AddWithValue("@class", CarClassTextBox.Text);
                     commandAddCar.Parameters.AddWithValue("@autopark", autopark_id.ToString());
-                    commandAddCar.Parameters.AddWithValue("@model", CarModelTextBox.Text);
+                    commandAddCar.Parameters.AddWithValue("@model", CarModelTextBox.Text +" "+ CarTransmissionComboBox.Text);
                     commandAddCar.Parameters.AddWithValue("@reserved", "1");
                     commandAddCar.Parameters.AddWithValue("@discount", CarDiscountTextBox.Text);
                     commandAddCar.Parameters.AddWithValue("@pic", System.Data.SqlTypes.SqlBinary.Null);
@@ -319,7 +337,7 @@ namespace AutoPark
                     commandAddCar.Parameters.AddWithValue("@spec", CarSpecTextBox.Text);
                     commandAddCar.Parameters.AddWithValue("@class", CarClassTextBox.Text);
                     commandAddCar.Parameters.AddWithValue("@autopark", autopark_id.ToString());
-                    commandAddCar.Parameters.AddWithValue("@model", CarModelTextBox.Text);
+                    commandAddCar.Parameters.AddWithValue("@model", CarModelTextBox.Text + " " + CarTransmissionComboBox.Text);
                     commandAddCar.Parameters.AddWithValue("@reserved", "1");
                     commandAddCar.Parameters.AddWithValue("@discount", CarDiscountTextBox.Text);
                     commandAddCar.Parameters.AddWithValue("@pic", byteArray);
@@ -347,6 +365,8 @@ namespace AutoPark
             }
             
             connection.Close();
+            fillUpDataGrids();
+            AddCarCard.Visibility = Visibility.Collapsed;
         }
 
         private byte[] ImageToByteArray(System.Windows.Controls.Image img)
@@ -647,6 +667,8 @@ namespace AutoPark
                 messageQueue.Enqueue(message);
             }
             connection.Close();
+            fillUpDataGrids();
+            BookCarCard.Visibility = Visibility.Collapsed;
         }
 
         private void bookCarButton_Click(object sender, RoutedEventArgs e)
@@ -805,6 +827,8 @@ namespace AutoPark
                 messageQueue.Enqueue(message);
             }
             connection.Close();
+            fillUpDataGrids();
+            AddCarCard.Visibility = Visibility.Collapsed;
         }
 
         private void NewClientButton_Click(object sender, RoutedEventArgs e)
