@@ -14,11 +14,12 @@
         <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
     </Window.Resources>
 
-    <dragablz:TabablzControl x:Name="MainTabControl">
+    <dragablz:TabablzControl x:Name="MainTabControl" SelectionChanged="selectedTabChanged">
         <dragablz:TabablzControl.InterTabController>
             <dragablz:InterTabController />
         </dragablz:TabablzControl.InterTabController>
         <TabItem Header="МАШИНЫ" x:Name="CarTab">
+            
             <Grid>
                 <ScrollViewer x:Name="ScrollCarsScrollViewer" ScrollChanged="DetectChange_scrollChaned" >
                     <Grid>
@@ -26,69 +27,8 @@
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
+
                         <WrapPanel Grid.Row="0" x:Name="wrapPanelCars" Margin="0,0,8,8">
-                            <materialDesign:Card Style="{StaticResource style}">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="140"/>
-                                        <RowDefinition Height="auto"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
-
-                                    <Image x:Name="LadaImg" Source="Resources/imgres.jpg" Height="140" Width="220" Stretch="UniformToFill"/>
-                                    <Button Grid.Row="0"  Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"
-                              HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0 0 20 -20">
-                                        <materialDesign:PackIcon Kind="Car"/>
-                                    </Button>
-                                    <StackPanel Grid.Row="1" Margin="8 30 8 0" >
-                                        <TextBlock  Style="{StaticResource MaterialDesignBody2TextBlock}" x:Name="textblock" VerticalAlignment="Center">LADA 21702 (PRIORA) 5MT</TextBlock>
-                                    </StackPanel>
-
-                                    <Separator Grid.Row="2" Style="{StaticResource MaterialDesignDarkSeparator}" Margin="8 0 8 0"/>
-
-                                    <Grid Grid.Row="3">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <materialDesign:PackIcon Kind="AvTimer" VerticalAlignment="Top" Margin="8 5 4 4"/>
-                                        <ListBox Grid.Column="1" Style="{StaticResource MaterialDesignToolToggleFlatListBox}" VerticalAlignment="Top" SelectedIndex="0" Margin="4 0 8 4">
-
-                                            <ListBox.Resources>
-                                                <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource MaterialDesignToolToggleListBoxItem}">
-                                                    <Setter Property="Padding" Value="4 6 4 6" />
-                                                </Style>
-                                            </ListBox.Resources>
-                                            <ListBoxItem>
-                                                <TextBlock Text="1 day" />
-                                            </ListBoxItem>
-                                            <ListBoxItem>
-                                                <TextBlock Text="7 days"/>
-                                            </ListBoxItem>
-                                            <ListBoxItem HorizontalAlignment="Right">
-                                                <TextBlock Text="30 days"/>
-                                            </ListBoxItem>
-                                        </ListBox>
-                                    </Grid>
-
-                                    <Grid Grid.Row="5">
-
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition Width="auto"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <Button Grid.Column="0" Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8 0 4 8" Click="Button_Click" >RESERVE</Button>
-                                        <TextBlock Grid.Column="1" Style="{StaticResource MaterialDesignBody2TextBlock}" x:Name="priceTextBlock" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="25,5,4,8" FontSize="16" >100</TextBlock>
-                                        <TextBlock Grid.Column="2" Style="{StaticResource MaterialDesignBody2TextBlock}" x:Name="RubTextBlock" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2,4,4,8" FontSize="16" Text="руб."/>
-                                    </Grid>
-                                </Grid>
-                            </materialDesign:Card>
-
                         </WrapPanel>
 
                         <materialDesign:PopupBox x:Name="AddNewThingPopUp" Grid.Row="1" Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}" 
@@ -112,9 +52,9 @@
                 <materialDesign:Snackbar MessageQueue="{materialDesign:MessageQueue}" x:Name="ClientAddedSnackBar" HorizontalAlignment="Stretch"/>
                 <materialDesign:Snackbar MessageQueue="{materialDesign:MessageQueue}" x:Name="CarAddedSnackBar" HorizontalAlignment="Stretch"/>
                 <materialDesign:Snackbar MessageQueue="{materialDesign:MessageQueue}" x:Name="CarBookedSnackBar" HorizontalAlignment="Stretch"/>
-            </Grid>
+            </Grid> 
         </TabItem>
-        <TabItem Header="ДОПОЛНИТЕЛЬНО" x:Name="AdditionsTab">
+        <TabItem Header="КАРТА" x:Name="AdditionsTab">
 
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -135,29 +75,6 @@
                     SEARCH
                 </Button>
 
-            </Grid>
-        </TabItem>
-        <TabItem Header="КОНТАКТЫ" x:Name="ContactsTab">
-
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Button Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" Grid.Row="0" Height="100" Width="100">
-                    <Button.CommandParameter>
-                    <Label>
-                        OH REALLY?!
-                    </Label>
-                    </Button.CommandParameter> 
-                    hua
-                </Button>
-                <materialDesign:DialogHost>
-                    <materialDesign:DialogHost.DialogContent>
-                        <Button Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
-                            BOY
-                        </Button>
-                    </materialDesign:DialogHost.DialogContent>
-                </materialDesign:DialogHost>
             </Grid>
         </TabItem>
         <TabItem x:Name="inputCarClientTabItem" Header="ВВОД" Visibility="Collapsed" IsEnabled="False">
@@ -342,7 +259,7 @@
                 </Grid>
             </ScrollViewer>
         </TabItem>
-        <TabItem Header="ТАБЛИЦЫ">
+        <TabItem Header="ТАБЛИЦЫ" x:Name="tablesTab">
 
             <Grid>
                 <ScrollViewer>
@@ -409,10 +326,55 @@
                 </ScrollViewer>
             </Grid>
         </TabItem>
-        <TabItem Header="ИНФО">
+        <TabItem Header="ИНФО" x:Name="InfoTab">
 
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="8">
-                <materialDesign:Card x:Name="CarInfoCard" VerticalAlignment="Stretch" Margin="12"/>
+            <StackPanel>
+                <materialDesign:Card x:Name="CarInfoCard" Margin="12" Width="500" Height="500">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock FontSize="18"  Grid.Column="0" Grid.Row="0" Margin="9,9,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">Подробнее о машине </TextBlock>
+                        <TextBlock FontSize="18" x:Name="CarNameInfo"  Grid.Column="1" Grid.Row="0" Margin="9,9,10,0" VerticalAlignment="Top" HorizontalAlignment="Center">djkghdgk</TextBlock>
+                        <Grid Grid.Row="1" VerticalAlignment="Top" Margin="0,20,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <WrapPanel Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="12,0,0,0">
+                                <TextBlock  Width="60" Height="20" Margin="3,30,3,0" VerticalAlignment="Stretch" Text="Номер: " HorizontalAlignment="Right"/>
+                                <TextBox  x:Name="carNumberInfo" IsReadOnly="True" Width="100" Margin="0,30,75,0" HorizontalAlignment="Left"/>
+                            </WrapPanel>
+
+                            <WrapPanel Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="12,0,0,0">
+                                <TextBlock  Width="60" Height="20" Margin="3,30,3,0" VerticalAlignment="Stretch" Text="Класс: " HorizontalAlignment="Right"/>
+                                <TextBox  x:Name="carClassInfo" IsReadOnly="True" Width="100" Margin="0,30,75,0" HorizontalAlignment="Left"/>
+                            </WrapPanel>
+                        </Grid>
+
+                        <StackPanel Grid.Row="2" VerticalAlignment="Top" Margin="0" HorizontalAlignment="Left" Width="400">
+                            <TextBox  IsReadOnly="True" MinWidth="260" TextWrapping="Wrap" materialDesign:HintAssist.Hint="Подробное описание" 
+                                         Grid.Row="4" Width="260" Margin="50,50,0,0" 
+                                         VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="moreCarInfo" Height="70"></TextBox>
+                            <TextBlock FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="51,48,0,0" >Автопарки, в которых есть данное авто</TextBlock>
+                            <ListBox SelectionChanged="AutoParksCarInfoListBox_SelectionChanged" x:Name="AutoParksCarInfoListBox" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="30,15,0,0">
+                            </ListBox>
+                        </StackPanel>
+                    </Grid>
+                </materialDesign:Card>
             </StackPanel>
         </TabItem>
     </dragablz:TabablzControl>

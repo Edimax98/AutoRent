@@ -18,7 +18,7 @@ namespace AutoPark
 {
     public partial class LoginWindow : Window
     {
-        private MainWindow window;
+        private MainWindow window = new MainWindow();
         SqlConnection connection = new SqlConnection(@"Server=EDIMAX;Database=AutoPark;Trusted_Connection=Yes;");
         public LoginWindow()
         {
@@ -108,6 +108,7 @@ namespace AutoPark
                     }
                 }
                 this.Close();
+                window.Show();
             } else
             {
                 var messageQueue = LoginSnackBar.MessageQueue;
@@ -128,8 +129,13 @@ namespace AutoPark
                     (window as MainWindow).BookingTableCard.Visibility = Visibility.Collapsed;
                 }
             }
-
             this.Close();
+            window.Show();
+        }
+
+        private void loginClosed(object sender, EventArgs e)
+        {
+            window.Show();
         }
     }
 }

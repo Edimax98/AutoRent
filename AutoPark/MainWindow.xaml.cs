@@ -46,7 +46,7 @@ namespace AutoPark
         private SqlDataAdapter ClientDa = new SqlDataAdapter();
         private DataSet BookingDs = new DataSet();
         private SqlDataAdapter BookingDa = new SqlDataAdapter();
-        public bool isAdmin = false;
+        //public bool isAdmin = false;
 
         public MainWindow()
         {
@@ -67,27 +67,26 @@ namespace AutoPark
             }
         }
 
+        private void listClick(object sender, MouseButtonEventArgs e)
+        {
+            MessageBox.Show("hello");
+        }
+
         private void window_loaded(object sender, RoutedEventArgs e)
         {
-            LoginWindow lw = new LoginWindow();
-            lw.Show();
             loadCar();
             fillInFields();
             fillUpDataGrids();
             ChangeImgButton.IsEnabled = false;
             connection.Close();
             hideControls();
+            MainTabControl.Items.Remove(inputCarClientTabItem);
         }
 
         private void hideControls()
         {
-            AddCarCard.Visibility = Visibility.Collapsed;
-            BookCarCard.Visibility = Visibility.Collapsed;
-            AddClientCard.Visibility = Visibility.Collapsed;
-            AddNewThingPopUp.Visibility = Visibility.Collapsed;
-            CarTableCard.Visibility = Visibility.Collapsed;
-            BookingTableCard.Visibility = Visibility.Collapsed;
-            ClientTableCard.Visibility = Visibility.Collapsed;
+            MainTabControl.Items.Remove(inputCarClientTabItem);
+            MainTabControl.Items.Remove(tablesTab);
         }
 
         private void fillInFields()
@@ -135,6 +134,23 @@ namespace AutoPark
             CarTransmissionComboBox.Items.Add("8AT");
         }
 
+        public void fillListBox()
+        {
+            connectToDataBase();
+
+            string getAutoParks = "SELECT address FROM AutoPark inner join Cars on AutoPark.autopark_id = Cars.autopark_id where Cars.car_number = @num";
+            SqlCommand commandAutoParks = new SqlCommand(getAutoParks, connection);
+            commandAutoParks.Parameters.AddWithValue("@num", carNumberInfo.Text);
+            using (SqlDataReader reader = commandAutoParks.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    AutoParksCarInfoListBox.Items.Add(reader["address"]);
+                }
+            }
+            connection.Close();
+        }
+
 
         private void Window_Activated(object sender, EventArgs e)
         {
@@ -143,20 +159,10 @@ namespace AutoPark
 
         private void MenuToggleButton_Checked(object sender, RoutedEventArgs e)
         {
-            //string insertCar = "SELECT Autopark.longitude, Autopark.latitude, Autopark.autopark_id FROM Brand INNER JOIN Cars ON Brand.brand = Cars.brand INNER JOIN Autopark ON Cars.autopark_id = Autopark.autopark_id WHERE(Brand.brand = @brand)";
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //            string insertCar = "INSERT into Cars VALUES(@staffName, @userID, @idDepartment)";
-
-            //using (SqlCommand querySaveStaff = new SqlCommand(insertCar))
-            //{
-            //    //querySaveStaff.Connection = connection;
-            //    //querySaveStaff.Parameters.Add("@staffName", SqlDbType.VarChar, 30).Value = name;
-            //    //connection.Open();
-            //}
-
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -174,7 +180,11 @@ namespace AutoPark
             command.Parameters.AddWithValue("@brand", searchAutoParkByBrandComboBox.Text);
             using (SqlDataReader reader = command.ExecuteReader())
             {
-                queryAddress.Append(searchAutoParkByBrandComboBox.Text);
+                while (reader.Read())
+                {
+                    queryAddress.Append(reader["longitude"] + ",");
+                    queryAddress.Append(reader["latitude"] + "; ");
+                }
             }
             connection.Close();
             webBrowser.Navigate(queryAddress.ToString());
@@ -182,10 +192,29 @@ namespace AutoPark
 
         private void NewCar_Click(object sender, RoutedEventArgs e)
         {
-            AddClientCard.Visibility = Visibility.Collapsed;
-            AddCarCard.Visibility = Visibility.Visible;
+            if (MainTabControl.Items.Contains(inputCarClientTabItem))
+            {
+                if (AddClientCard.Visibility == Visibility.Visible || BookCarCard.Visibility == Visibility.Visible)
+                {
+                    if (MessageBox.Show("Вы не завершили предыдущий ввод. Хотите продолжить?", "Предупреждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                    {
+                        MainTabControl.SelectedItem = inputCarClientTabItem;
+                        BookCarCard.Visibility = Visibility.Collapsed;
+                        AddCarCard.Visibility = Visibility.Visible;
+                        AddClientCard.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                return;
+            }
+            MainTabControl.SelectedItem = inputCarClientTabItem;
+            MainTabControl.Items.Add(inputCarClientTabItem);
             BookCarCard.Visibility = Visibility.Collapsed;
-            MainTabControl.SelectedItem = inputCarClientTabItem;   
+            AddCarCard.Visibility = Visibility.Visible;
+            AddClientCard.Visibility = Visibility.Collapsed;
         }
 
         private void reloadCards()
@@ -220,9 +249,9 @@ namespace AutoPark
                             <materialDesign:PackIcon Kind = 'AvTimer' VerticalAlignment = 'Top' Margin = '8 5 4 4'/>
                             <ListBox Grid.Column = '1' Style = '{ StaticResource MaterialDesignToolToggleFlatListBox}' VerticalAlignment = 'Top' SelectedIndex = '0' Margin = '4 0 8 4' >
                             <ListBox.Resources><Style TargetType = '{x:Type ListBoxItem}' BasedOn = '{StaticResource MaterialDesignToolToggleListBoxItem}'><Setter Property = 'Padding' Value = '4 6 4 6'/></Style></ListBox.Resources>
-                            <ListBoxItem><TextBlock Text = '1 день'/></ListBoxItem>
-                            <ListBoxItem><TextBlock Text = '7 дней'/></ListBoxItem>
-                            <ListBoxItem><TextBlock Text = '30 дней'/></ListBoxItem></ListBox></Grid>
+                            <ListBoxItem><TextBlock Text = '1 д'/></ListBoxItem>
+                            <ListBoxItem><TextBlock Text = '7 д'/></ListBoxItem>
+                            <ListBoxItem><TextBlock Text = '30 д'/></ListBoxItem></ListBox></Grid>
                             <Grid Grid.Row='5'><Grid.ColumnDefinitions><ColumnDefinition Width = 'auto'/><ColumnDefinition Width = 'auto'/><ColumnDefinition Width = 'auto'/></Grid.ColumnDefinitions>
                             <Button Grid.Column='0' Style='{ StaticResource MaterialDesignFlatButton}' HorizontalAlignment='Left' VerticalAlignment='Top' Margin='8 0 4 8'>RESERVE</Button>
                             <TextBlock Grid.Column = '1' Style = '{StaticResource MaterialDesignBody2TextBlock}' VerticalAlignment = 'Top' HorizontalAlignment = 'Left' Margin = '25,5,4,8' FontSize = '16'/>
@@ -240,7 +269,7 @@ namespace AutoPark
             System.Windows.Controls.Image carImg = new System.Windows.Controls.Image();
             BitmapImage carImgBit = loadPicture(byteArray);
           
-            Car car = new Car(Convert.ToInt32(CarPriceTextBox.Text), CarBrandComboBox.Text, CarSpecTextBox.Text, CarModelTextBox.Text + " " + CarTransmissionComboBox.Text, carImgBit, CarNumberTextBox.Text, false, CarClassTextBox.Text, Convert.ToInt32(CarDiscountTextBox.Text));
+            Car car = new Car(Convert.ToInt32(CarPriceTextBox.Text), CarBrandComboBox.Text, CarSpecTextBox.Text, CarBrandComboBox.Text + " " + CarModelTextBox.Text + " " + CarTransmissionComboBox.Text, carImgBit, CarNumberTextBox.Text, false, CarClassTextBox.Text, Convert.ToInt32(CarDiscountTextBox.Text));
 
             wrapPanelCars.Children.Add(crd);
             crd.Style = style;
@@ -270,7 +299,7 @@ namespace AutoPark
                 {
                     panel = item as StackPanel;
                     nameTextBlock = panel.Children[0] as TextBlock;
-                    nameTextBlock.Text = CarModelTextBox.Text + " " + CarTransmissionComboBox.Text;
+                    nameTextBlock.Text = CarBrandComboBox.Text + " " + CarModelTextBox.Text + " " + CarTransmissionComboBox.Text;
                 }
 
                 if (item is Grid && !firstGrFound)
@@ -291,6 +320,13 @@ namespace AutoPark
                         if (j is Button)
                         {
                             (j as Button).Click += car.BookCarButton_Click;
+                        }
+
+                        if (j is ListBox)
+                        {
+
+                            (j as ListBox).SelectionChanged += car.listBox_selectedItemChange;
+                            priceTextBlock.Text = car.calculatedDics.ToString();
                         }
                     }
                 }
@@ -406,41 +442,7 @@ namespace AutoPark
 
         }
 
-        //private byte[] SavePicture(BitmapImage bitImg)
-        //{
-        //    System.Windows.Controls.Image img = new System.Windows.Controls.Image();
-        //    img.Source = bitImg;
-        //    System.Drawing.Image imgToSave = null;
-        //    if (img != null)
-        //    {
-        //        MemoryStream msToConvert = new MemoryStream();
-        //        System.Windows.Media.Imaging.BmpBitmapEncoder bbe = new BmpBitmapEncoder();
-        //        bbe.Frames.Add(BitmapFrame.Create(new Uri(img.Source.ToString(), UriKind.RelativeOrAbsolute)));
-        //        bbe.Save(msToConvert);
-        //        imgToSave = System.Drawing.Image.FromStream(msToConvert);
-        //    }
-        //    byte[] arr = null;
-
-        //    if (imgChosen)
-        //    {
-        //            MemoryStream ms = new MemoryStream();
-        //            imgToSave.Save(ms, System.Drawing.Imaging.ImageFormat.Gif);
-        //            /*   ms.Position= 0;
-        //               BitmapImage ix = new BitmapImage();
-        //               ix.BeginInit();
-        //               ix.CacheOption = BitmapCacheOption.OnLoad;
-        //               ix.StreamSource = ms;
-        //               ix.EndInit();*/
-        //            //LadaImg.Source = ix;
-
-        //            //////////////
-        //            //imgToSave.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-        //            arr = ms.GetBuffer();
-        //            ms.Close();
-        //    }
-        //     return arr;
-        // }
-
+       
         private BitmapImage loadPicture(byte[] arr)
         {
             BitmapImage ix = new BitmapImage();
@@ -516,17 +518,16 @@ namespace AutoPark
                             <Separator Grid.Row='2' Style='{ StaticResource MaterialDesignDarkSeparator}' Margin='8 0 8 0'/>
                             <Grid Grid.Row = '3'><Grid.ColumnDefinitions><ColumnDefinition Width = 'auto'/><ColumnDefinition/></Grid.ColumnDefinitions>
                             <materialDesign:PackIcon Kind = 'AvTimer' VerticalAlignment = 'Top' Margin = '8 5 4 4'/>
-                            <ListBox Grid.Column = '1' Style = '{ StaticResource MaterialDesignToolToggleFlatListBox}' VerticalAlignment = 'Top' SelectedIndex = '0' Margin = '4 0 8 4' >
+                            <ListBox Grid.Column = '1' Style = '{ StaticResource MaterialDesignToolToggleFlatListBox}' VerticalAlignment = 'Top' SelectedIndex = '0' Margin = '12 0 8 4' >
                             <ListBox.Resources><Style TargetType = '{x:Type ListBoxItem}' BasedOn = '{StaticResource MaterialDesignToolToggleListBoxItem}'><Setter Property = 'Padding' Value = '4 6 4 6'/></Style></ListBox.Resources>
-                            <ListBoxItem><TextBlock Text = '1 день'/></ListBoxItem>
-                            <ListBoxItem><TextBlock Text = '7 дней'/></ListBoxItem>
-                            <ListBoxItem><TextBlock Text = '30 дней'/></ListBoxItem></ListBox></Grid>
+                            <ListBoxItem><TextBlock Text = '1 д'/></ListBoxItem>
+                            <ListBoxItem><TextBlock Text = '7 д'/></ListBoxItem>
+                            <ListBoxItem><TextBlock Text = '30 д'/></ListBoxItem></ListBox></Grid>
                             <Grid Grid.Row='5'><Grid.ColumnDefinitions><ColumnDefinition Width = 'auto'/><ColumnDefinition Width = 'auto'/><ColumnDefinition Width = 'auto'/></Grid.ColumnDefinitions>
                             <Button Grid.Column='0' Style='{ StaticResource MaterialDesignFlatButton}' HorizontalAlignment='Left' VerticalAlignment='Top' Margin='8 0 4 8'>RESERVE</Button>
                             <TextBlock Grid.Column = '1' Style = '{StaticResource MaterialDesignBody2TextBlock}' VerticalAlignment = 'Top' HorizontalAlignment = 'Left' Margin = '25,5,4,8' FontSize = '16'/>
                             <TextBlock Grid.Column = '2' Style = '{StaticResource MaterialDesignBody2TextBlock}' VerticalAlignment = 'Top' HorizontalAlignment = 'Left' Margin = '2,4,4,8' FontSize = '16' Text = 'руб.'/></Grid></Grid></materialDesign:Card>");
-
-
+                   
                     BitmapImage img = new BitmapImage(new Uri(@"C:\Users\Даниил\Desktop\noCar.png"));
                     MaterialDesignThemes.Wpf.Card crd = (MaterialDesignThemes.Wpf.Card)XamlReader.Parse(strbld.ToString());
                     Grid gridFirst = (crd.Content as Grid);
@@ -583,11 +584,17 @@ namespace AutoPark
                                     {
                                         priceTextBlock.Text = price.ToString();
                                         carPriceForBook = price;
+                                        //priceTextBlock.Text = car.getCalculatedPrice().ToString();
                                     }
                                 }
                                 if (j is Button)
                                 {
                                     (j as Button).Click += car.BookCarButton_Click;
+                                }
+
+                                if (j is ListBox)
+                                {
+                                    (j as ListBox).SelectionChanged += car.listBox_selectedItemChange;
                                 }
                             }
                         }
@@ -669,19 +676,22 @@ namespace AutoPark
             connection.Close();
             fillUpDataGrids();
             BookCarCard.Visibility = Visibility.Collapsed;
+            BookingCarName.Text = "Бронирование: ";
+            finalPrice.Text = "";
         }
 
         private void bookCarButton_Click(object sender, RoutedEventArgs e)
         {
             BookCar();
+            MainTabControl.Items.Remove(inputCarClientTabItem);
         }
 
         private void StartDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
-            int firstPrice = Convert.ToInt32(finalPrice.Text);
-            int TotalPrice = 0;
-            int countOfDays;
-            int tariffPrice = 0;
+            double firstPrice = Convert.ToDouble(finalPrice.Text);
+            double TotalPrice = 0.0;
+            double countOfDays;
+            double tariffPrice = 0.0;
 
             if (!DateEnd.SelectedDate.HasValue)
             {
@@ -697,12 +707,12 @@ namespace AutoPark
 
                 if (countOfDays > 1 && countOfDays < 7)
                 {
-                    TotalPrice = firstPrice - firstPrice * (carDiscount / 100);
+                    TotalPrice = firstPrice - firstPrice * (carDiscount / 100.0);
                 }
 
                 if (countOfDays > 7 && countOfDays < 30)
                 {
-                    TotalPrice = firstPrice - firstPrice * ((carDiscount + carDiscount) / 100);
+                    TotalPrice = firstPrice - firstPrice * ((carDiscount + carDiscount) / 100.0);
                 }
                 finalPrice.Text = TotalPrice.ToString();
             }
@@ -757,14 +767,9 @@ namespace AutoPark
             if (maxVerticalOffset < 0 ||
                 verticalOffset == maxVerticalOffset)
             {
-                // Scrolled to bottom
-                //rect.Fill = new SolidColorBrush(Colors.Red);
-               // AddNewCarButton.Margin = new Thickness(4, 4, 4, maxVerticalOffset - System.Windows.SystemParameters.PrimaryScreenHeight);
-            }
+             }
             else
             {
-                // Not scrolled to bottom
-             //   rect.Fill = new SolidColorBrush(Colors.Yellow);
             }
         }
 
@@ -829,14 +834,38 @@ namespace AutoPark
             connection.Close();
             fillUpDataGrids();
             AddCarCard.Visibility = Visibility.Collapsed;
+            ClientNameTextBox.Text = "";
+            ClientPatrTextBox.Text = "";
+            ClientPhoneTextBox.Text = "";
+            ClientSurnameTextBox.Text = "";
+            MainTabControl.Items.Remove(inputCarClientTabItem);
         }
 
         private void NewClientButton_Click(object sender, RoutedEventArgs e)
         {
+            if(MainTabControl.Items.Contains(inputCarClientTabItem))
+            {
+                if (AddCarCard.Visibility == Visibility.Visible || BookCarCard.Visibility == Visibility.Visible)
+                {
+                    if (MessageBox.Show("Вы не завершили предыдущий ввод. Хотите продолжить?", "Предупреждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                    {
+                        MainTabControl.SelectedItem = inputCarClientTabItem;
+                        BookCarCard.Visibility = Visibility.Collapsed;
+                        AddCarCard.Visibility = Visibility.Collapsed;
+                        AddClientCard.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                return;
+            }
+            MainTabControl.SelectedItem = inputCarClientTabItem;
+            MainTabControl.Items.Add(inputCarClientTabItem);
             BookCarCard.Visibility = Visibility.Collapsed;
             AddCarCard.Visibility = Visibility.Collapsed;
             AddClientCard.Visibility = Visibility.Visible;
-            MainTabControl.SelectedItem = inputCarClientTabItem;
         }
 
         private void DeleteCarButton_Click(object sender, RoutedEventArgs e)
@@ -845,24 +874,7 @@ namespace AutoPark
             
             if (CarsDataGrid.SelectedItem != null)
             {
-              //  CarsDataGrid.Items.Remove(CarsDataGrid.ItemsSource);
             }
-                //  DataGridViewRow dr = dataGridView1.Rows[i];
-                // if (dr.Selected == true)
-                //{
-                //CarsDataGrid.Items.Remove(item);
-                ////   try
-                //   {
-                //       connectToDataBase();
-                //       cmd.CommandText = "Delete from Car where car_number" + i + "";
-                //       cmd.ExecuteNonQuery();
-                //       connection.Close();
-                //   }
-                //   catch (Exception ex)
-                //   {
-                //       MessageBox.Show(ex.ToString());
-                //   }
-        //}
         }
 
         private void ChangeCarButton_Click(object sender, RoutedEventArgs e)
@@ -949,6 +961,21 @@ namespace AutoPark
                     messageQueue.Enqueue(message);
                 }
             }
+        }
+
+        private void AutoParksCarInfoListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void selectedTabChanged(object sender, SelectionChangedEventArgs e)
+        {
+           // Dragablz.TabablzControl tabControl = (sender as Dragablz.TabablzControl);
+           //if (tabControl.SelectedItem != inputCarClientTabItem)
+           // {
+           //     MainTabControl.Items.Remove(inputCarClientTabItem);
+           //     BookingCarName.Text = "Бронирование: ";
+           // }
         }
     }
 }
